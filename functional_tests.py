@@ -31,14 +31,31 @@ class NewVisitorTest(unittest.TestCase):
         # The table should list 1: Buy peacock feathers
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')  
-        self.assertTrue(
-            any(row.text == '1: Buy peacock feathers' for row in rows),
-            "New to-do item did not appear in table"
+        # self.assertTrue(
+        # any(row.text == '1: Buy peacock feathers' for row in rows),
+        # f"New to-do item did not appear in table. Contents were:\n{table.text}"
+        # )
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+       
+        # test 2 - Add a second input to the table
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+
+        # The page updates again, and now shows both items on her list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.assertIn(
+        '2: Use peacock feathers to make a fly',
+         [row.text for row in rows]
     )
 
-        # Still to complete, add another item
+        # Edith wonders whether the site will remember her list. Then she sees
+        # that the site has generated a unique URL for her -- there is some
+        # explanatory text to that effect.
         self.fail('Finish the test!')
-        # Page updates again and we see both items in the table list
 
 if __name__ == '__main__':  
     unittest.main()
